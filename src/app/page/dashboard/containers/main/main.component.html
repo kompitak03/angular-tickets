@@ -1,0 +1,290 @@
+<shared-header></shared-header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 mb-3">
+      <button
+        class="btn btn-success float-right"
+        (click)="openModal(addTicket); setFormTickets()"
+      >
+        เพิ่ม Ticket
+      </button>
+    </div>
+    <div class="col-12">
+      <dashboard-table
+        [allTickets]="allTickets"
+        (getContentById)="onSelectContract($event)"
+        (delById)="onDeleteContract($event)"
+      ></dashboard-table>
+    </div>
+  </div>
+</div>
+
+<!-- Template Modal -->
+<ng-template #addTicket>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add / Update ticket</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row" [formGroup]="addTicketsForm">
+      <div class="col-5">
+        <div class="form-group">
+          <label for="">Provider</label>
+          <select
+            class="form-control"
+            name=""
+            id=""
+            (change)="onChangeProvider($event.target.value)"
+            formControlName="provider"
+          >
+            <option value="" disabled>-- Select --</option>
+            <option *ngFor="let item of providers" [value]="item">
+              {{ item | titlecase }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="form-group">
+          <label for="">Contract No</label>
+          <select
+            class="form-control"
+            name=""
+            id=""
+            (change)="onChangeContractNo($event.target.value)"
+            formControlName="contractno"
+          >
+            <option value="" disabled>-- Select --</option>
+            <option *ngFor="let contract of contractNo" [value]="contract">
+              {{ contract }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group">
+          <label for="">Status</label>
+          <input
+            type="text"
+            name="status"
+            id="status"
+            class="form-control"
+            disabled
+            formControlName="status"
+          />
+        </div>
+      </div>
+      <div class="col-12" formArrayName="circuitArray">
+        <div
+          class="row"
+          *ngFor="let circuitItem of circuitArrays.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="col-10">
+            <div class="form-group">
+              <label for="">Circuit Id</label>
+              <select
+                class="form-control"
+                name="circuitId"
+                id="circuitId"
+                formControlName="circuitId"
+              >
+                <option value="" disabled>-- Select --</option>
+                <option
+                  *ngFor="let circuit of circuitItems"
+                  [value]="circuit.id"
+                >
+                  {{ circuit.id }} - {{ circuit.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="form-group" style="padding-top: 32px">
+              <button
+                class="btn btn-primary"
+                (click)="addCircuit()"
+                *ngIf="i === 0"
+              >
+                +
+              </button>
+              <button
+                class="btn btn-danger"
+                *ngIf="i > 0"
+                (click)="delCircuit(i)"
+              >
+                -
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">เหตุเสีย</label>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="5"
+            class="form-control"
+            formControlName="problem"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">สาเหตุ</label>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="5"
+            class="form-control"
+            formControlName="cause"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">ผลกระทบ</label>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="5"
+            class="form-control"
+            formControlName="effect"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">การแก้ไข</label>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="5"
+            class="form-control"
+            formControlName="repairing"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">เวลาเสีย</label>
+          <div class="col-12">
+            <div class="row">
+              <input
+                type="text"
+                name=""
+                id=""
+                class="form-control col-6"
+                bsDatepicker
+                formControlName="problemDate"
+                placement="top"
+              />
+              <div class="col-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="problemTime"
+                  placeholder="Enter time ..."
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="">เวลาคืนดี</label>
+          <div class="col-12">
+            <div class="row">
+              <input
+                type="text"
+                name=""
+                id=""
+                class="form-control col-6"
+                bsDatepicker
+                formControlName="fixedDate"
+                placement="top"
+              />
+              <div class="col-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="fixedTime"
+                  placeholder="Enter time ..."
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="">หมายเหตุ</label>
+          <textarea
+            name="remark"
+            id="remark"
+            cols="30"
+            rows="5"
+            class="form-control"
+            formControlName="remark"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="btn-group float-right">
+      <button class="btn btn-secondary" (click)="closeModal()">Back</button>
+      <button
+        class="btn btn-primary"
+        [disabled]="!addTicketsForm.valid"
+        (click)="updateTicket('Complete')"
+      >
+        Complete
+      </button>
+      <button
+        class="btn btn-success"
+        *ngIf="actionStatus === 'none'"
+        [disabled]="!addTicketsForm.valid"
+        (click)="addTickets()"
+      >
+        Save
+      </button>
+      <button
+        class="btn btn-success"
+        *ngIf="actionStatus !== 'none'"
+        [disabled]="!addTicketsForm.valid"
+        (click)="updateTicket('On process')"
+      >
+        Update
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmDelete>
+  <div class="modal-body text-center">
+    <p>Do you want to delete?</p>
+    <button type="button" class="btn btn-default" (click)="delConfirm()">
+      Yes, delete it
+    </button>
+    <button type="button" class="btn btn-primary" (click)="closeModal()">
+      No, don't delete it
+    </button>
+  </div>
+</ng-template>

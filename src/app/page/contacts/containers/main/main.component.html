@@ -1,0 +1,330 @@
+<shared-header></shared-header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <button
+        class="btn btn-primary float-left mb-3"
+        (click)="isCollapsed = !isCollapsed"
+        [attr.aria-expanded]="!isCollapsed"
+        aria-controls="collapseBasic"
+      >
+        ค้นหา Contract
+      </button>
+    </div>
+    <div class="col-6">
+      <button
+        class="btn btn-success float-right mb-3"
+        (click)="openModal(contractModal)"
+      >
+        เพิ่ม Contract
+      </button>
+    </div>
+    <div class="col-12 mb-3">
+      <div id="collapseBasic" [collapse]="isCollapsed">
+        <div class="well well-lg card card-block card-header">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label for="selection">Select search</label>
+                <select
+                  name="selection"
+                  id="selection"
+                  class="form-control"
+                  [(ngModel)]="searchSelect"
+                >
+                  <option disabled value="">-- Select --</option>
+                  <option
+                    *ngFor="let select of selections"
+                    [value]="select.name"
+                  >
+                    {{ select.name | titlecase }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div
+              class="col-4"
+              *ngIf="
+                searchSelect != '' &&
+                searchSelect != 'start date' &&
+                searchSelect != 'exp date'
+              "
+            >
+              <div class="form-group">
+                <label for="txtSearch">Text for search</label>
+                <input
+                  type="text"
+                  name="txtSearch"
+                  id="txtSearch"
+                  class="form-control"
+                  placeholder="Enter word you want to search ..."
+                  (keyup)="updateFilter($event)"
+                />
+              </div>
+            </div>
+            <div
+              class="col-3"
+              *ngIf="searchSelect == 'start date' || searchSelect == 'exp date'"
+            >
+              <div class="form-group">
+                <label for="txtSearch">From date</label>
+                <input
+                  type="button"
+                  name="txtSearch"
+                  id="txtSearch"
+                  class="form-control"
+                  [(ngModel)]="fromDate"
+                  bsDatepicker
+                />
+              </div>
+            </div>
+            <div
+              class="col-3"
+              *ngIf="searchSelect == 'start date' || searchSelect == 'exp date'"
+            >
+              <div class="form-group">
+                <label for="txtSearch">To date</label>
+                <input
+                  type="button"
+                  name="txtSearch"
+                  id="txtSearch"
+                  class="form-control"
+                  [(ngModel)]="toDate"
+                  bsDatepicker
+                />
+              </div>
+            </div>
+            <div
+              class="col-2"
+              style="padding-top: 32px;"
+              [ngClass]="{
+                'd-none':
+                  searchSelect != 'start date' && searchSelect != 'exp date'
+              }"
+            >
+              <button
+                class="btn btn-success btn-block"
+                (click)="onSearchContract()"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <contacts-table
+        [filter]="filter"
+        [allData]="allData"
+        (getContentById)="onSelectContract($event)"
+        (delById)="onDeleteContract($event)"
+      ></contacts-table>
+    </div>
+  </div>
+</div>
+
+<ng-template #contractModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add / Update Contract</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" [formGroup]="addContracts">
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="contractNo">Contract No</label>
+          <input
+            type="text"
+            name="contractNo"
+            id="contractNo"
+            class="form-control"
+            placeholder="Enter contract number"
+            formControlName="contractno"
+          />
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="type">Type</label>
+          <select
+            name="type"
+            id="type"
+            class="form-control"
+            formControlName="type"
+          >
+            <option disabled value="">-- Select --</option>
+            <option value="sp">Service provider</option>
+            <option value="customer">Customer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-4" *ngIf="type.value === 'customer'">
+        <div class="form-group">
+          <label for="subtype">Sub Type</label>
+          <select
+            name="subtype"
+            id="subtype"
+            class="form-control"
+            formControlName="subtype"
+          >
+            <option disabled value="">-- Select --</option>
+            <option value="iig">IIG</option>
+            <option value="nix">NIX</option>
+            <option value="vpn">VPN</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group">
+          <label for="circuitID">Circuit ID</label>
+          <input
+            type="text"
+            name="circuitID"
+            id="circuitID"
+            class="form-control"
+            placeholder="Enter circuit id ..."
+            formControlName="circuitid"
+          />
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group">
+          <label for="circuitID">Circuit Name</label>
+          <input
+            type="text"
+            name="circuitName"
+            id="circuitName"
+            class="form-control"
+            placeholder="Enter circuit name ..."
+            formControlName="circuitname"
+          />
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group">
+          <label for="provider">Provider</label>
+          <input
+            *ngIf="type.value !== 'sp'"
+            type="text"
+            name="provider"
+            id="provider"
+            class="form-control"
+            placeholder="Enter provider name ..."
+            formControlName="provider"
+          />
+          <select
+            *ngIf="type.value === 'sp'"
+            name=""
+            id=""
+            class="form-control"
+            formControlName="provider"
+          >
+            <option value="">-- Select --</option>
+            <option value="time">Time</option>
+            <option value="ct">CT</option>
+            <option value="pccw">PCCW</option>
+            <option value="bics">BICS</option>
+            <option value="ntt">NTT</option>
+            <option value="kt">KT</option>
+            <option value="fiberail">Fiberail</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="startTime">Start Time</label>
+          <input
+            type="text"
+            name="startTime"
+            id="startTime"
+            class="form-control"
+            placeholder="Enter start time ..."
+            formControlName="start"
+            bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY', isAnimated: true }"
+          />
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group">
+          <label for="endTime">End Time</label>
+          <input
+            type="text"
+            name="endTime"
+            id="endTime"
+            class="form-control"
+            placeholder="Enter end time ..."
+            formControlName="end"
+            bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY', isAnimated: true }"
+          />
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            class="form-control"
+            cols="30"
+            rows="5"
+            formControlName="description"
+            placeholder="Enter your description ..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">
+        Back
+      </button>
+      <button
+        type="button"
+        class="btn btn-success"
+        (click)="addContract()"
+        *ngIf="actionStatus === 'add'"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        class="btn btn-success"
+        (click)="updateContract()"
+        *ngIf="actionStatus === 'update'"
+      >
+        Update
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmDelete>
+  <div class="modal-body text-center">
+    <p>Do you want to delete?</p>
+    <button type="button" class="btn btn-default" (click)="delConfirm()">
+      Yes, delete it
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modalRef.hide()">
+      No, don't delete it
+    </button>
+  </div>
+</ng-template>

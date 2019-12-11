@@ -1,0 +1,13 @@
+#sign-in-form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+:host .card {
+    border-radius: 30px;
+    -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 11, 214, 1);
+    -moz-box-shadow: 0px 0px 15px -1px rgba(0, 11, 214, 1);
+    box-shadow: 0px 0px 15px -1px rgba(0, 11, 214, 1);
+}

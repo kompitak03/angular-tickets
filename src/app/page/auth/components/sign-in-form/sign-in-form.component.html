@@ -1,0 +1,49 @@
+<div class="row" id="sign-in-form">
+    <div class="card mx-auto col" style="max-width: 620px;height: 620px;">
+        <div class="card-body">
+            <img class="my-5 img-fluid" src="http://www.totiig.net/totiig/img/logo.png" alt="">
+            <h4 class="text-center">
+                Login Ticket
+            </h4>
+            <div class="alert alert-danger text-center" *ngIf="shwErr != ''">
+                {{ shwErr }}
+            </div>
+            <form class="mt-2 mb-5" [formGroup]="signInForm" (ngSubmit)="signIn()">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter your email ..." formControlName="email"
+                        [ngClass]="{'rounded-0': email.invalid && (email.dirty || email.touched) }">
+                    <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                        class="bg-danger rounded-bottom text-center">
+                        <div *ngIf="email.errors.required">
+                            Email is required.
+                        </div>
+                        <div *ngIf="email.errors.email">
+                            Must be email format.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" placeholder="Enter your password ..."
+                            formControlName="password"
+                            [ngClass]="{'rounded-0': password.invalid && (password.dirty || password.touched) }">
+                        <div *ngIf="password.invalid && (password.dirty || password.touched)"
+                            class="bg-danger rounded-bottom text-center">
+                            <div *ngIf="password.errors.required">
+                                Password is required.
+                            </div>
+                            <div *ngIf="password.errors.minlength">
+                                Password must be at least 8 characters long.
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" name="sign-in" id="sign-in" class="btn btn-success btn-lg btn-block">
+                        Sign In
+                    </button>
+                    <button type="button" class="btn btn-link btn-sm mt-3 float-right">
+                        Forgot password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>

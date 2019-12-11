@@ -1,0 +1,35 @@
+<ngx-datatable
+  class="material"
+  [rows]="rows"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="50"
+  [limit]="10"
+>
+  <ngx-datatable-column
+    name=""
+    prop="id"
+    [width]="80"
+    [sortable]="false"
+    [canAutoResize]="false"
+    [draggable]="false"
+    [resizeable]="false"
+  >
+    <ng-template ngx-datatable-cell-template let-value="value">
+      <div class="btn-group">
+        <button class="btn btn-primary btn-sm" (click)="getById(value)">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" (click)="onDelete(value)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    *ngFor="let column of columns"
+    [name]="column.name"
+    [prop]="column.prop"
+  >
+  </ngx-datatable-column>
+</ngx-datatable>
